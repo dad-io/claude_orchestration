@@ -1,0 +1,143 @@
+name: Code Quality Improvement
+version: 2.0
+orchestration_compatible: true
+estimated_time: 45 minutes
+parallel_safe: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, code-reviewer, architect, validator-test-runner, security-scout, doc-scribe]
+dynamic_agents:
+  - type: specialist
+    domain: performance
+    generate_if_missing: true
+  - type: builder
+    language: "${detected_language}"
+    generate_if_missing: true
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [analysis_complete, refactoring_planned, improvements_implemented, validation_passed]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Code Analysis
+    coordination: orchestrator
+    checkpoint: analysis_complete
+    parallel_execution: true
+    agents:
+      - code-reviewer
+    agent_requirements:
+      - type: specialist
+        domain: performance
+        capabilities: [code_analysis, optimization_identification]
+        generate_if_missing: true
+    tasks:
+      - Identify code smells
+      - Find duplicated code
+      - Check complexity metrics
+      - Review naming conventions
+      - Assess maintainability
+    
+  - name: Refactoring Planning
+    agents:
+      - architect
+    tasks:
+      - Identify refactoring opportunities
+      - Plan structural improvements
+      - Design patterns application
+      - Module reorganization
+      - Dependency optimization
+    
+  - name: Code Cleanup
+    coordination: orchestrator
+    depends_on: [Refactoring Planning]
+    agent_requirements:
+      - type: builder
+        language: "${detected_language}"
+        capabilities: [refactoring, code_cleanup, linting]
+        generate_if_missing: true
+    tasks:
+      - Remove dead code
+      - Fix linting issues
+      - Standardize formatting
+      - Update deprecated APIs
+      - Improve error handling
+    
+  - name: Performance Optimization
+    coordination: orchestrator
+    checkpoint: improvements_implemented
+    parallel_execution: true
+    depends_on: [Code Cleanup]
+    agent_requirements:
+      - type: specialist
+        domain: performance
+        capabilities: [algorithm_optimization, caching_strategies]
+        generate_if_missing: true
+    tasks:
+      - Optimize algorithms
+      - Improve database queries
+      - Add caching strategies
+      - Reduce bundle sizes
+      - Optimize resource usage
+    
+  - name: Testing Enhancement
+    agents:
+      - validator-test-runner
+    tasks:
+      - Increase test coverage
+      - Add missing unit tests
+      - Improve test quality
+      - Add integration tests
+      - Performance benchmarks
+
+  - name: Security Hardening
+    agents:
+      - security-scout
+    tasks:
+      - Fix security vulnerabilities
+      - Update dependencies
+      - Improve input validation
+      - Add security headers
+      - Implement rate limiting
+
+  - name: Documentation Updates
+    agents:
+      - doc-scribe
+    tasks:
+      - Update code comments
+      - Document refactored code
+      - Update API documentation
+      - Add migration guide
+      - Document improvements
+
+deliverables:
+  - refactoring-report.md
+  - performance-improvements.md
+  - security-fixes.md
+  - test-coverage-report.html
+  - code-quality-metrics.json
+
+improvement_areas:
+  - Code Structure
+  - Performance
+  - Security
+  - Maintainability
+  - Test Coverage
+  - Documentation
+  - Error Handling
+  - Resource Usage
+
+metrics:
+  before:
+    - complexity_score
+    - test_coverage
+    - performance_score
+    - security_score
+  after:
+    - complexity_score
+    - test_coverage
+    - performance_score
+    - security_score

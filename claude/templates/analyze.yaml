@@ -1,0 +1,89 @@
+
+name: Comprehensive Analysis
+version: 2.0
+orchestration_compatible: true
+estimated_time: 40 minutes
+parallel_safe: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, security-scout, code-reviewer, validator-test-runner, architect, doc-scribe]
+dynamic_agents:
+  - type: specialist
+    domain: performance
+    generate_if_missing: true
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [security_scan_complete, quality_assessment_done, analysis_complete]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Security Scan
+    coordination: orchestrator
+    checkpoint: security_scan_complete
+    parallel_execution: true
+    agents:
+      - security-scout
+    tasks:
+      - Scan for vulnerabilities
+      - Check dependencies
+      - Review authentication
+      - Audit secrets handling
+    
+  - name: Quality Assessment
+    coordination: orchestrator
+    checkpoint: quality_assessment_done
+    parallel_execution: true
+    agents:
+      - code-reviewer
+      - validator-test-runner
+    tasks:
+      - Review code style
+      - Check test coverage
+      - Identify code smells
+      - Find duplications
+    
+  - name: Performance Audit
+    coordination: orchestrator
+    parallel_execution: true
+    agent_requirements:
+      - type: specialist
+        domain: performance
+        capabilities: [profiling, optimization_analysis]
+        generate_if_missing: true
+    tasks:
+      - Profile hot paths
+      - Check memory usage
+      - Review algorithms
+      - Database query analysis
+    
+  - name: Technical Debt
+    agents:
+      - architect
+    tasks:
+      - Find TODOs/FIXMEs
+      - Assess refactoring needs
+      - Review architecture
+      - Identify missing tests
+
+  - name: Report Generation
+    coordination: orchestrator
+    checkpoint: analysis_complete
+    depends_on: [Security Scan, Quality Assessment, Performance Audit, Technical Debt]
+    agents:
+      - doc-scribe
+      - architect
+    tasks:
+      - Compile findings
+      - Prioritize issues
+      - Create action items
+      - Generate summary
+
+deliverables:
+  - analysis-report.md
+  - issues-priority.md
+  - recommendations.md
+  - metrics-dashboard.md

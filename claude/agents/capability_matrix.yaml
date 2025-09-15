@@ -1,0 +1,304 @@
+# Agent Capability Matrix
+# Defines the capabilities, tools, and coordination patterns for all agents in the system
+
+version: "2.0"
+updated: "2025-09-15"
+
+# Core Agent Ecosystem - Always Available
+core_agents:
+  orchestrator:
+    name: "orchestrator"
+    description: "Advanced orchestrator with state management, learning, parallel execution, and dynamic agent generation"
+    priority: 1
+    status: "active"
+    tools: [Read, Write, Edit, Grep, Glob, LS, Bash]
+    capabilities:
+      - orchestration
+      - learning
+      - parallel_execution
+      - state_management
+      - agent_generation
+      - checkpoint_management
+      - inter_agent_communication
+    specializations:
+      - "System-wide coordination and task distribution"
+      - "Dynamic agent creation and lifecycle management"
+      - "Learning from execution patterns and optimization"
+      - "State machine management (IDLE ’ PLANNING ’ EXECUTING ’ COMPLETED)"
+      - "Parallel task scheduling and dependency resolution"
+    integration_points:
+      - "All agents report to orchestrator"
+      - "Manages agent communication bus"
+      - "Handles error recovery and fallback strategies"
+    proactive_triggers:
+      - "Multi-step complex tasks requiring coordination"
+      - "When specialized agents need to be created"
+      - "Session management and checkpoint operations"
+
+  architect:
+    name: "architect"
+    description: "System designer and technical planning specialist"
+    priority: "high"
+    status: "active"
+    tools: [Read, Write, Grep, Glob, LS]
+    capabilities:
+      - system_design
+      - technical_planning
+      - architecture_assessment
+      - refactoring_strategy
+      - technology_evaluation
+    specializations:
+      - "System architecture design and documentation"
+      - "Implementation planning and task breakdown"
+      - "Technical debt assessment and remediation strategies"
+      - "Component relationship analysis and dependency mapping"
+      - "Integration point design and API contracts"
+    integration_points:
+      - "Works with: orchestrator for system-wide planning"
+      - "Coordinates with: all builders for implementation guidance"
+      - "Provides input to: security-scout for architecture reviews"
+    proactive_triggers:
+      - "New feature requirements involving multiple components"
+      - "System refactoring or architectural changes"
+      - "Technical debt assessment requests"
+      - "Integration planning between systems"
+
+  code-reviewer:
+    name: "code-reviewer"
+    description: "Expert code review specialist focusing on quality and security"
+    priority: "high"
+    status: "active"
+    tools: [Read, Grep, Glob, Bash]
+    capabilities:
+      - code_quality_review
+      - security_analysis
+      - best_practices_enforcement
+      - performance_review
+      - test_coverage_analysis
+    specializations:
+      - "Code readability and maintainability assessment"
+      - "Security vulnerability identification (secrets, injection risks)"
+      - "Language-specific best practices (Rust safety, Python type hints, TS strict types)"
+      - "Test sufficiency and meaningful assertion verification"
+      - "Performance and memory consideration reviews"
+    integration_points:
+      - "Triggered by: orchestrator after code changes"
+      - "Works with: security-scout for comprehensive security review"
+      - "Coordinates with: validator-test-runner for test quality"
+    proactive_triggers:
+      - "After any significant code changes or commits"
+      - "Before merge requests or production deployments"
+      - "When security-scout identifies potential issues"
+
+  security-scout:
+    name: "security-scout"
+    description: "Security vulnerability scanner and auditor"
+    priority: "high"
+    status: "active"
+    tools: [Read, Grep, Bash, Write]
+    capabilities:
+      - vulnerability_scanning
+      - dependency_auditing
+      - secrets_detection
+      - compliance_checking
+      - security_reporting
+    specializations:
+      - "OWASP compliance and common vulnerability detection"
+      - "Dependency audit and license compliance checking"
+      - "Hardcoded secrets and credentials scanning"
+      - "SQL injection, XSS, and CSRF vulnerability assessment"
+      - "Security best practices enforcement and recommendations"
+    integration_points:
+      - "Works with: code-reviewer for comprehensive reviews"
+      - "Reports to: orchestrator and architect for security guidance"
+      - "Triggers: remediation tasks for critical vulnerabilities"
+    proactive_triggers:
+      - "Before production deployments"
+      - "After dependency updates or new package additions"
+      - "When processing user input or external data"
+      - "During API endpoint development"
+
+  validator-test-runner:
+    name: "validator-test-runner"
+    description: "Test creation, execution, and quality assurance specialist"
+    priority: "high"
+    status: "active"
+    tools: [Read, Edit, Write, Grep, Glob, LS, Bash]
+    capabilities:
+      - test_creation
+      - test_execution
+      - coverage_analysis
+      - tdd_implementation
+      - quality_assurance
+    specializations:
+      - "Test-driven development (TDD) implementation"
+      - "Unit, integration, and regression test creation"
+      - "Test coverage analysis and gap identification"
+      - "Multi-language test framework expertise (pytest, jest, cargo test)"
+      - "Acceptance criteria validation and verification"
+    integration_points:
+      - "Coordinates with: all builders for test-first development"
+      - "Works with: code-reviewer for test quality assessment"
+      - "Reports to: orchestrator for validation status"
+    proactive_triggers:
+      - "Before any feature implementation (TDD)"
+      - "After bug fixes to create regression tests"
+      - "When acceptance criteria are defined"
+      - "During CI/CD pipeline execution"
+
+  doc-scribe:
+    name: "doc-scribe"
+    description: "Documentation generation and maintenance specialist"
+    priority: "medium"
+    status: "active"
+    tools: [Read, Edit, Write, Grep, Glob]
+    capabilities:
+      - documentation_generation
+      - api_documentation
+      - changelog_maintenance
+      - user_guide_creation
+      - code_commenting
+    specializations:
+      - "README updates and usage example creation"
+      - "API reference documentation generation"
+      - "Changelog entry creation and maintenance"
+      - "User guide and tutorial development"
+      - "Code documentation and inline commenting"
+    integration_points:
+      - "Triggered by: orchestrator after feature completion"
+      - "Works with: architect for system documentation"
+      - "Coordinates with: all agents for feature documentation"
+    proactive_triggers:
+      - "After feature implementation completion"
+      - "When API changes or new endpoints are added"
+      - "Before release preparation"
+      - "When user-facing functionality changes"
+
+# Dynamic Agent Templates - Generated On-Demand
+dynamic_agent_templates:
+  builder_template:
+    name_pattern: "builder-{language}"
+    description_pattern: "{language} implementation specialist with {framework} expertise"
+    tools: [Read, Edit, Write, MultiEdit, Grep, Glob, LS, Bash]
+    capabilities:
+      - language_specific_implementation
+      - framework_integration
+      - test_driven_development
+      - code_formatting
+      - dependency_management
+    generation_triggers:
+      - "Language-specific implementation needed"
+      - "Framework-specific features required"
+      - "When no suitable builder exists"
+    supported_languages:
+      python:
+        test_command: "pytest -v"
+        formatter: "ruff, black"
+        frameworks: [django, flask, fastapi, pydantic]
+      typescript:
+        test_command: "npm test"
+        formatter: "prettier, eslint"
+        frameworks: [react, vue, express, nestjs]
+      rust:
+        test_command: "cargo test"
+        formatter: "cargo fmt, cargo clippy"
+        frameworks: [tokio, actix, axum, serde]
+      web:
+        test_command: "npm test"
+        formatter: "prettier"
+        frameworks: [vite, webpack, rollup]
+
+  specialist_template:
+    name_pattern: "{specialty}-specialist"
+    description_pattern: "{specialty} expert for {domain} tasks"
+    tools: "{context_specific}"
+    capabilities:
+      - domain_expertise
+      - specialized_analysis
+      - targeted_solutions
+      - best_practices_enforcement
+    common_specialties:
+      - performance_optimization
+      - api_design
+      - database_migration
+      - deployment_automation
+      - monitoring_setup
+      - infrastructure_management
+
+# Agent Communication Patterns
+communication_matrix:
+  orchestrator:
+    sends_to: ["all_agents"]
+    receives_from: ["all_agents"]
+    message_types: ["task_assignment", "status_request", "coordination"]
+
+  architect:
+    sends_to: ["orchestrator", "builders", "security-scout"]
+    receives_from: ["orchestrator"]
+    message_types: ["design_guidance", "implementation_plan"]
+
+  code-reviewer:
+    sends_to: ["orchestrator", "builders", "security-scout"]
+    receives_from: ["orchestrator", "builders"]
+    message_types: ["review_results", "improvement_suggestions"]
+
+  security-scout:
+    sends_to: ["orchestrator", "code-reviewer", "architect"]
+    receives_from: ["orchestrator", "code-reviewer"]
+    message_types: ["vulnerability_report", "security_recommendations"]
+
+  validator-test-runner:
+    sends_to: ["orchestrator", "builders"]
+    receives_from: ["orchestrator", "builders"]
+    message_types: ["test_results", "coverage_report", "test_requests"]
+
+  doc-scribe:
+    sends_to: ["orchestrator"]
+    receives_from: ["orchestrator", "all_agents"]
+    message_types: ["documentation_updates", "changelog_entries"]
+
+# Workflow Coordination Patterns
+coordination_patterns:
+  feature_development:
+    sequence:
+      - architect: "Design and plan implementation"
+      - validator-test-runner: "Create failing tests (TDD)"
+      - builder: "Implement feature"
+      - code-reviewer: "Review implementation"
+      - security-scout: "Security audit"
+      - validator-test-runner: "Verify tests pass"
+      - doc-scribe: "Update documentation"
+    parallel_phases:
+      - [architect, security-scout]: "Design review"
+      - [builder, validator-test-runner]: "Implementation and testing"
+      - [code-reviewer, security-scout]: "Quality and security review"
+
+  bug_fix:
+    sequence:
+      - validator-test-runner: "Create regression test"
+      - builder: "Implement fix"
+      - code-reviewer: "Review fix"
+      - validator-test-runner: "Verify fix"
+      - doc-scribe: "Update changelog"
+
+  security_audit:
+    parallel:
+      - security-scout: "Vulnerability scan"
+      - code-reviewer: "Code security review"
+      - validator-test-runner: "Security test verification"
+    coordination: orchestrator
+
+# Performance and Optimization
+performance_targets:
+  agent_response_time: "< 30 seconds"
+  parallel_efficiency: "> 75%"
+  task_completion_rate: "> 95%"
+  cache_hit_rate: "> 40%"
+  agent_generation_time: "< 30 seconds"
+
+optimization_strategies:
+  - "Cache common solutions and patterns"
+  - "Parallel execution for independent tasks"
+  - "Intelligent agent selection based on task requirements"
+  - "Dynamic scaling of agent pools"
+  - "Learning from execution patterns"

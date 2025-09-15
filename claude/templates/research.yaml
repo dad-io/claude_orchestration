@@ -1,0 +1,186 @@
+name: Research and Planning
+version: 2.0
+orchestration_compatible: true
+estimated_time: 30 minutes
+parallel_safe: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, architect, security-scout]
+dynamic_agents:
+  - type: specialist
+    domain: api_design
+    generate_if_missing: true
+  - type: specialist
+    domain: performance
+    generate_if_missing: true
+
+questions:
+  - prompt: "What problem are you trying to solve?"
+    key: problem_statement
+    required: true
+    
+  - prompt: "What constraints or requirements exist?"
+    key: constraints
+    
+  - prompt: "What is your timeline?"
+    key: timeline
+    
+  - prompt: "Any technology preferences?"
+    key: tech_preferences
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [problem_defined, research_complete, architecture_designed, planning_complete]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Problem Analysis
+    coordination: orchestrator
+    checkpoint: problem_defined
+    agents:
+      - architect
+    tasks:
+      - Define problem clearly
+      - Identify stakeholders
+      - List requirements
+      - Document constraints
+      - Set success criteria
+    outputs:
+      - problem_definition.md
+      - requirements.md
+
+  - name: Solution Research
+    coordination: orchestrator
+    checkpoint: research_complete
+    parallel_execution: true
+    depends_on: [Problem Analysis]
+    agents:
+      - architect
+    agent_requirements:
+      - type: specialist
+        domain: api_design
+        capabilities: [solution_research, technology_evaluation]
+        generate_if_missing: true
+    tasks:
+      - Research existing solutions
+      - Evaluate technologies
+      - Compare approaches
+      - Analyze trade-offs
+      - Check best practices
+    outputs:
+      - research_findings.md
+      - technology_comparison.md
+
+  - name: Architecture Design
+    coordination: orchestrator
+    checkpoint: architecture_designed
+    depends_on: [Solution Research]
+    agents:
+      - architect
+    agent_requirements:
+      - type: specialist
+        domain: api_design
+        capabilities: [architecture_design, interface_specification]
+        generate_if_missing: true
+    tasks:
+      - Design system architecture
+      - Define components
+      - Plan data flow
+      - Create interfaces
+      - Design API contracts
+    outputs:
+      - architecture_diagram.md
+      - api_specification.md
+      - component_design.md
+
+  - name: Security Analysis
+    agents:
+      - security-scout
+    tasks:
+      - Threat modeling
+      - Security requirements
+      - Compliance checks
+      - Risk assessment
+      - Mitigation strategies
+    outputs:
+      - threat_model.md
+      - security_requirements.md
+
+  - name: Performance Planning
+    agents:
+      - perf-optimizer
+    tasks:
+      - Performance requirements
+      - Scalability planning
+      - Bottleneck prediction
+      - Optimization strategies
+      - Monitoring plan
+    outputs:
+      - performance_targets.md
+      - scalability_plan.md
+
+  - name: Implementation Planning
+    agents:
+      - architect
+    tasks:
+      - Break down into tasks
+      - Estimate effort
+      - Define milestones
+      - Identify dependencies
+      - Create timeline
+    outputs:
+      - implementation_plan.md
+      - task_breakdown.md
+      - project_timeline.md
+
+  - name: Risk Assessment
+    agents:
+      - architect
+      - security-scout
+    tasks:
+      - Identify risks
+      - Assess probability
+      - Determine impact
+      - Plan mitigations
+      - Create contingencies
+    outputs:
+      - risk_matrix.md
+      - mitigation_plan.md
+
+deliverables:
+  - research_report.md
+  - architecture_design.md
+  - implementation_plan.md
+  - risk_assessment.md
+  - technology_recommendations.md
+  - api_specification.md
+  - timeline_and_milestones.md
+
+decision_points:
+  technology_selection:
+    criteria:
+      - Team expertise
+      - Performance requirements
+      - Scalability needs
+      - Maintenance burden
+      - Community support
+      - License compatibility
+      
+  architecture_pattern:
+    options:
+      - Monolithic
+      - Microservices
+      - Serverless
+      - Event-driven
+      - Layered
+      
+  data_storage:
+    consider:
+      - Data volume
+      - Query patterns
+      - Consistency requirements
+      - Performance needs
+      - Scalability requirements

@@ -1,0 +1,129 @@
+name: Documentation Generation
+version: 2.0
+orchestration_compatible: true
+estimated_time: 30 minutes
+parallel_safe: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, doc-scribe, architect]
+dynamic_agents:
+  - type: specialist
+    domain: api_design
+    generate_if_missing: true
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [analysis_complete, api_docs_ready, code_documented, user_docs_complete]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Analysis
+    coordination: orchestrator
+    checkpoint: analysis_complete
+    parallel_execution: true
+    agents:
+      - doc-scribe
+      - architect
+    tasks:
+      - Scan codebase structure
+      - Identify undocumented code
+      - Find existing documentation
+      - Assess documentation gaps
+      - Plan documentation structure
+    
+  - name: API Documentation
+    coordination: orchestrator
+    checkpoint: api_docs_ready
+    parallel_execution: true
+    depends_on: [Analysis]
+    agents:
+      - doc-scribe
+    agent_requirements:
+      - type: specialist
+        domain: api_design
+        capabilities: [openapi_generation, endpoint_documentation]
+        generate_if_missing: true
+    tasks:
+      - Document REST endpoints
+      - Create OpenAPI specs
+      - Document request/response schemas
+      - Add example requests
+      - Document error codes
+    
+  - name: Code Documentation
+    coordination: orchestrator
+    checkpoint: code_documented
+    parallel_execution: true
+    depends_on: [Analysis]
+    agents:
+      - doc-scribe
+    tasks:
+      - Add JSDoc/docstrings
+      - Document complex functions
+      - Add inline comments
+      - Create type definitions
+      - Document configuration options
+    
+  - name: User Documentation
+    coordination: orchestrator
+    checkpoint: user_docs_complete
+    depends_on: [API Documentation, Code Documentation]
+    agents:
+      - doc-scribe
+    tasks:
+      - Create/update README
+      - Write installation guide
+      - Create usage examples
+      - Write troubleshooting guide
+      - Create FAQ section
+    
+  - name: Developer Documentation
+    agents:
+      - architect
+      - doc-scribe
+    tasks:
+      - Document architecture
+      - Create development guide
+      - Write contribution guidelines
+      - Document testing procedures
+      - Create style guide
+
+  - name: Changelog & Release Notes
+    agents:
+      - doc-scribe
+    tasks:
+      - Update CHANGELOG.md
+      - Create release notes
+      - Document breaking changes
+      - List new features
+      - Document bug fixes
+
+deliverables:
+  - README.md
+  - API_DOCUMENTATION.md
+  - ARCHITECTURE.md
+  - DEVELOPMENT.md
+  - CHANGELOG.md
+  - docs/
+    - installation.md
+    - usage.md
+    - troubleshooting.md
+    - api-reference.md
+
+documentation_types:
+  - API Reference
+  - User Guides
+  - Developer Guides
+  - Architecture Docs
+  - Inline Code Comments
+  - Configuration Docs
+
+quality_checks:
+  - Completeness
+  - Accuracy
+  - Clarity
+  - Examples provided
+  - Up to date

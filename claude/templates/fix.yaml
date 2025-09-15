@@ -1,0 +1,177 @@
+name: Fix Issues and Bugs
+version: 2.0
+orchestration_compatible: true
+estimated_time: 60 minutes
+priority: high
+parallel_safe: false
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, architect, validator-test-runner, code-reviewer, security-scout]
+dynamic_agents:
+  - type: builder
+    language: "${detected_language}"
+    generate_if_missing: true
+
+questions:
+  - prompt: "What issue needs to be fixed?"
+    key: issue_description
+    required: true
+
+  - prompt: "Is there an error message or stack trace?"
+    key: error_details
+
+  - prompt: "When did this issue start occurring?"
+    key: timeline
+
+  - prompt: "What is the expected behavior?"
+    key: expected_behavior
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [analysis_complete, fix_implemented, validation_passed]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Issue Analysis
+    coordination: orchestrator
+    parallel_execution: true
+    agents:
+      - architect
+    agent_requirements:
+      - role: analysis
+        capabilities: [root_cause_analysis, system_understanding]
+    tasks:
+      - Reproduce the issue
+      - Analyze error logs
+      - Identify root cause
+      - Check recent changes
+      - Review related code
+    outputs:
+      - root_cause_analysis.md
+      - affected_components.txt
+
+  - name: Test Creation
+    coordination: orchestrator
+    checkpoint: regression_tests_created
+    agents:
+      - validator-test-runner
+    tasks:
+      - Write failing test for bug
+      - Define success criteria
+      - Create regression tests
+    outputs:
+      - test_cases.md
+      - failing_tests.log
+
+  - name: Fix Implementation
+    coordination: orchestrator
+    checkpoint: fix_implemented
+    depends_on: [Issue Analysis, Test Creation]
+    agent_requirements:
+      - type: builder
+        language: "${detected_language}"
+        capabilities: [debugging, error_handling, edge_case_management]
+        generate_if_missing: true
+    tasks:
+      - Implement fix
+      - Handle edge cases
+      - Add error handling
+      - Update affected components
+    outputs:
+      - fix_summary.md
+      - changed_files.txt
+
+  - name: Validation
+    coordination: orchestrator
+    checkpoint: validation_passed
+    parallel_execution: true
+    depends_on: [Fix Implementation]
+    agents:
+      - validator-test-runner
+      - code-reviewer
+    tasks:
+      - Run all tests
+      - Verify fix works
+      - Check for regressions
+      - Review code changes
+    outputs:
+      - test_results.log
+      - validation_report.md
+
+  - name: Security Check
+    coordination: orchestrator
+    parallel_execution: true
+    depends_on: [Fix Implementation]
+    agents:
+      - security-scout
+    tasks:
+      - Scan for vulnerabilities
+      - Check fix doesn't introduce issues
+      - Validate input handling
+    outputs:
+      - security_review.md
+
+  - name: Documentation
+    coordination: orchestrator
+    depends_on: [Validation, Security Check]
+    agents:
+      - doc-scribe
+    tasks:
+      - Document the fix
+      - Update changelog
+      - Add to known issues if partial
+      - Create runbook for future
+    outputs:
+      - fix_documentation.md
+      - changelog_entry.md
+
+deliverables:
+  - fixed_code_files
+  - test_results.log
+  - fix_summary_report.md
+  - regression_test_suite
+
+# Orchestrator Error Recovery
+recovery_strategies:
+  unable_to_reproduce:
+    coordination: orchestrator
+    action: gather_more_info
+    agent_requirements:
+      - type: specialist
+        domain: debugging
+        generate_if_missing: true
+    fallback: document_as_cannot_reproduce
+    rollback_checkpoint: analysis_complete
+
+  fix_causes_regression:
+    coordination: orchestrator
+    action: rollback_and_retry
+    rollback_checkpoint: fix_implemented
+    agent_requirements:
+      - type: builder
+        language: "${detected_language}"
+        capabilities: [regression_analysis]
+    fallback: partial_fix_with_workaround
+
+  test_failures:
+    coordination: orchestrator
+    action: analyze_failures
+    agent: validator-test-runner
+    fallback: manual_testing_required
+    rollback_checkpoint: regression_tests_created
+
+  agent_generation_failure:
+    coordination: orchestrator
+    action: fallback_to_core_agents
+    fallback_agents: [architect, code-reviewer, validator-test-runner]
+    continue_workflow: true
+
+success_criteria:
+  - All tests pass
+  - Issue no longer reproducible
+  - No new security vulnerabilities
+  - Performance not degraded
+  - Code review approved

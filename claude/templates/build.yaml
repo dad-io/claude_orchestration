@@ -1,0 +1,90 @@
+name: Feature Building
+version: 2.0
+orchestration_compatible: true
+estimated_time: 90 minutes
+requires_input: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, architect, validator-test-runner, code-reviewer, security-scout, doc-scribe]
+dynamic_agents:
+  - type: builder
+    language: "${detected_language}"
+    generate_if_missing: true
+  - type: specialist
+    domain: api_design
+    generate_if_missing: true
+
+questions:
+  - prompt: "What feature would you like to build?"
+    key: feature_name
+    required: true
+
+  - prompt: "Any specific requirements or constraints?"
+    key: requirements
+
+  - prompt: "Which components will this interact with?"
+    key: dependencies
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [design_approved, tests_created, implementation_complete, validation_passed]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Planning
+    coordination: orchestrator
+    checkpoint: design_approved
+    parallel_execution: true
+    agents:
+      - architect
+    agent_requirements:
+      - type: specialist
+        domain: api_design
+        capabilities: [interface_definition, contract_design]
+        generate_if_missing: true
+    tasks:
+      - Analyze requirements
+      - Design architecture
+      - Define interfaces
+      - Create task breakdown
+      
+  - name: Test Definition
+    agents:
+      - validator-test-runner
+    tasks:
+      - Write acceptance tests
+      - Create unit test stubs
+      - Define test scenarios
+      - Set coverage goals
+      
+  - name: Implementation
+    agents:
+      - builder-${detected_language}
+    tasks:
+      - Implement core logic
+      - Handle edge cases
+      - Add error handling
+      - Optimize performance
+      
+  - name: Quality Assurance
+    agents:
+      - validator-test-runner
+      - code-reviewer
+      - security-scout
+    tasks:
+      - Run all tests
+      - Review code quality
+      - Security validation
+      - Performance check
+      
+  - name: Documentation
+    agents:
+      - doc-scribe
+    tasks:
+      - API documentation
+      - Usage examples
+      - Update README
+      - Add to changelog

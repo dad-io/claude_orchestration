@@ -1,0 +1,138 @@
+name: Deployment Preparation
+version: 2.0
+orchestration_compatible: true
+estimated_time: 30 minutes
+requires_confirmation: true
+parallel_safe: false
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, architect, validator-test-runner, security-scout, doc-scribe]
+dynamic_agents:
+  - type: specialist
+    domain: deployment
+    generate_if_missing: true
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [validation_passed, build_complete, configuration_ready, deployment_approved]
+  error_recovery: true
+  parallel_optimization: true
+  confirmation_required: true
+
+phases:
+  - name: Pre-Deployment Validation
+    coordination: orchestrator
+    checkpoint: validation_passed
+    parallel_execution: true
+    agents:
+      - validator-test-runner
+      - security-scout
+    tasks:
+      - Run full test suite
+      - Verify all tests passing
+      - Security vulnerability scan
+      - Check for exposed secrets
+      - Validate environment variables
+    
+  - name: Build & Package
+    coordination: orchestrator
+    checkpoint: build_complete
+    depends_on: [Pre-Deployment Validation]
+    agents:
+      - architect
+    agent_requirements:
+      - type: builder
+        language: "${detected_language}"
+        capabilities: [production_build, asset_optimization]
+        generate_if_missing: true
+    tasks:
+      - Create production build
+      - Optimize assets
+      - Bundle dependencies
+      - Generate build manifest
+      - Create deployment artifacts
+
+  - name: Configuration
+    coordination: orchestrator
+    checkpoint: configuration_ready
+    parallel_execution: true
+    depends_on: [Build & Package]
+    agents:
+      - architect
+    agent_requirements:
+      - type: specialist
+        domain: api_design
+        capabilities: [api_documentation, environment_configuration]
+        generate_if_missing: true
+      - type: specialist
+        domain: monitoring
+        capabilities: [health_checks, observability]
+        generate_if_missing: true
+    tasks:
+      - Generate environment configs
+      - Update API documentation
+      - Create deployment scripts
+      - Configure monitoring
+      - Set up health checks
+
+  - name: Performance Validation
+    coordination: orchestrator
+    parallel_execution: true
+    depends_on: [Build & Package]
+    agent_requirements:
+      - type: specialist
+        domain: performance
+        capabilities: [benchmarking, optimization]
+        generate_if_missing: true
+    tasks:
+      - Run performance benchmarks
+      - Validate against baselines
+      - Check resource requirements
+      - Optimize if needed
+
+  - name: Documentation
+    coordination: orchestrator
+    depends_on: [Configuration, Performance Validation]
+    agents:
+      - doc-scribe
+    tasks:
+      - Update deployment guide
+      - Create release notes
+      - Document configuration
+      - Update changelog
+      - Create rollback procedures
+
+  - name: Final Review
+    coordination: orchestrator
+    checkpoint: deployment_approved
+    depends_on: [Documentation]
+    confirmation_required: true
+    agents:
+      - architect
+      - security-scout
+    tasks:
+      - Review deployment checklist
+      - Validate all requirements met
+      - Security sign-off
+      - Create deployment report
+
+deliverables:
+  - deployment-package.tar.gz
+  - release-notes.md
+  - deployment-guide.md
+  - rollback-procedures.md
+  - deployment-report.md
+
+pre_checks:
+  - All tests must pass
+  - No critical security issues
+  - Performance within thresholds
+  - Documentation complete
+
+post_deployment:
+  - Monitor application health
+  - Check error rates
+  - Validate performance
+  - User acceptance testing

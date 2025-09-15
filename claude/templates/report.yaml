@@ -1,0 +1,129 @@
+name: Status Report Generation
+version: 2.0
+orchestration_compatible: true
+estimated_time: 15 minutes
+parallel_safe: true
+
+# Orchestrator Integration
+coordination: orchestrator
+required_core_agents: [orchestrator, code-reviewer, validator-test-runner, security-scout, doc-scribe]
+dynamic_agents:
+  - type: specialist
+    domain: performance
+    generate_if_missing: true
+
+# Orchestrated Workflow
+orchestrator_workflow:
+  state_machine: true
+  checkpoints: [data_collected, metrics_analyzed, report_compiled]
+  error_recovery: true
+  parallel_optimization: true
+
+phases:
+  - name: Data Collection
+    coordination: orchestrator
+    checkpoint: data_collected
+    agents:
+      - orchestrator
+    tasks:
+      - Gather execution metrics
+      - Collect agent performance data
+      - Review completed tasks
+      - Compile error logs
+      - Calculate statistics
+    
+  - name: Code Metrics
+    agents:
+      - code-reviewer
+      - validator-test-runner
+    tasks:
+      - Lines of code statistics
+      - Test coverage metrics
+      - Code complexity analysis
+      - Technical debt assessment
+      - Dependency analysis
+    
+  - name: Security Status
+    agents:
+      - security-scout
+    tasks:
+      - Vulnerability summary
+      - Security compliance status
+      - Dependency audit results
+      - Secrets scan results
+      - Security recommendations
+    
+  - name: Performance Analysis
+    coordination: orchestrator
+    parallel_execution: true
+    agent_requirements:
+      - type: specialist
+        domain: performance
+        capabilities: [performance_analysis, benchmarking]
+        generate_if_missing: true
+    tasks:
+      - Performance benchmarks
+      - Resource utilization
+      - Bottleneck identification
+      - Optimization opportunities
+      - Trend analysis
+    
+  - name: Progress Summary
+    agents:
+      - orchestrator
+      - doc-scribe
+    tasks:
+      - Tasks completed
+      - Tasks in progress
+      - Blocked items
+      - Timeline analysis
+      - Milestone tracking
+
+  - name: Report Compilation
+    agents:
+      - doc-scribe
+    tasks:
+      - Create executive summary
+      - Generate detailed reports
+      - Create visualizations
+      - Compile recommendations
+      - Format deliverables
+
+deliverables:
+  - executive-summary.md
+  - detailed-report.md
+  - metrics-dashboard.html
+  - recommendations.md
+  - reports/
+    - code-quality.md
+    - security-status.md
+    - performance-analysis.md
+    - test-coverage.md
+    - progress-report.md
+
+report_sections:
+  - Executive Summary
+  - Project Status
+  - Completed Tasks
+  - Pending Items
+  - Metrics & KPIs
+  - Issues & Risks
+  - Recommendations
+  - Next Steps
+
+metrics_included:
+  - Task completion rate
+  - Code quality score
+  - Test coverage percentage
+  - Security vulnerability count
+  - Performance benchmarks
+  - Resource utilization
+  - Error rate
+  - Agent efficiency
+
+visualizations:
+  - Progress charts
+  - Burndown graphs
+  - Quality trends
+  - Performance graphs
+  - Resource usage charts
